@@ -349,7 +349,13 @@ class RowIterator implements IteratorInterface
      */
     protected function isEmptyRow($rowData)
     {
-        return (count($rowData) > strlen(implode('', $rowData)));
+        foreach ($rowData as $cell) {
+            if (is_object($cell) || strlen($cell)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
