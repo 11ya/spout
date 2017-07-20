@@ -103,4 +103,18 @@ class CellHelper
     {
         return (preg_match('/^[A-Z]{1,3}\d+$/', $cellIndex) === 1);
     }
+
+    /**
+     * @param string $cellIndex The Excel cell index ('A1', 'BC13', ...)
+     * @return int
+     * @throws \Box\Spout\Common\Exception\InvalidArgumentException When the given cell index is invalid
+     */
+    public static function getRowIndexFromCellIndex($cellIndex)
+    {
+        if (!self::isValidCellIndex($cellIndex)) {
+            throw new InvalidArgumentException('Cannot get column index from an invalid cell index.');
+        }
+
+        return preg_replace('/\D/', '', $cellIndex);
+    }
 }
