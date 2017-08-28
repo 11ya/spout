@@ -57,6 +57,9 @@ EOD;
     /** @var int Index of the last written row */
     protected $lastWrittenRowIndex = 0;
 
+    /** @var array */
+    protected $mergeCells = array();
+
     /**
      * @param \Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
      * @param string $worksheetFilesFolder Temporary folder where the files to create the XLSX will be stored
@@ -258,6 +261,25 @@ EOD;
     }
 
     /**
+     * @param string $start
+     * @param string $end
+     */
+    public function addMergeCell($start, $end)
+    {
+        $this->mergeCells[$start] = $end;
+    }
+
+    public function clearMergeCells()
+    {
+        $this->mergeCells = array();
+    }
+
+    public function setMergeCells(array $mergeCells)
+    {
+        $this->mergeCells = $mergeCells;
+    }
+
+    /**
      * Closes the worksheet
      *
      * @return void
@@ -269,6 +291,15 @@ EOD;
         }
 
         fwrite($this->sheetFilePointer, '</sheetData>');
+
+        if ($this->mergeCells) {
+            fwrite($this->sheetFilePointer, '<mergeCells count="' . count($this->mergeCells) . '">');
+            foreach ($this->mergeCells as $start => $end) {
+                fwrite($this->sheetFilePointer, '<mergeCell ref="' . $start . ':' . $end . '"/>');
+            }
+            fwrite($this->sheetFilePointer, '</mergeCells>');
+        }
+        
         fwrite($this->sheetFilePointer, '</worksheet>');
         fclose($this->sheetFilePointer);
     }

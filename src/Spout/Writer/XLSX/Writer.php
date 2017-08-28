@@ -118,6 +118,12 @@ class Writer extends AbstractMultiSheetsWriter
             ->build();
     }
 
+    public function setMergeCellsToCurrentWorksheet(array $mergeCells)
+    {
+        $this->throwIfBookIsNotAvailable();
+        $this->book->setMergeCellsToCurrentWorksheet($mergeCells);
+    }
+
     /**
      * Closes the writer, preventing any additional writing.
      *

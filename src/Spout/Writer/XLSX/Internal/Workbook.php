@@ -122,6 +122,12 @@ class Workbook extends AbstractWorkbook
         $this->cleanupTempFolder();
     }
 
+    public function setMergeCellsToCurrentWorksheet(array $mergeCells)
+    {
+        $sheet = $this->getCurrentWorksheet();
+        $sheet->setMergeCells($mergeCells);
+    }
+
     /**
      * Deletes the root folder created in the temp folder and all its contents.
      *
