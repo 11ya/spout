@@ -60,6 +60,12 @@ EOD;
     /** @var array */
     protected $mergeCells = array();
 
+    /** @var int */
+    protected $defaultRowHeight;
+
+    /** @var array */
+    protected $defaultColumnWidths = array();
+
     /**
      * @param \Box\Spout\Writer\Common\Sheet $externalSheet The associated "external" sheet
      * @param string $worksheetFilesFolder Temporary folder where the files to create the XLSX will be stored
@@ -280,6 +286,47 @@ EOD;
     }
 
     /**
+     * @return int
+     */
+    public function getDefaultRowHeight()
+    {
+        return $this->defaultRowHeight;
+    }
+
+    /**
+     * @param int $defaultRowHeight
+     * @return Worksheet
+     */
+    public function setDefaultRowHeight($defaultRowHeight)
+    {
+        $this->defaultRowHeight = $defaultRowHeight;
+        return $this;
+    }
+
+    public function addDefaultColumnWidth($min, $max, $width)
+    {
+        $this->defaultColumnWidths[$min] = ['max' => $max, 'width' => $width];
+    }
+
+    /**
+     * @return array
+     */
+    public function getDefaultColumnWidths()
+    {
+        return $this->defaultColumnWidths;
+    }
+
+    /**
+     * @param array $defaultColumnWidths
+     * @return Worksheet
+     */
+    public function setDefaultColumnWidths($defaultColumnWidths)
+    {
+        $this->defaultColumnWidths = $defaultColumnWidths;
+        return $this;
+    }
+
+    /**
      * Closes the worksheet
      *
      * @return void
@@ -298,6 +345,17 @@ EOD;
                 fwrite($this->sheetFilePointer, '<mergeCell ref="' . $start . ':' . $end . '"/>');
             }
             fwrite($this->sheetFilePointer, '</mergeCells>');
+        }
+        if ($this->defaultRowHeight) {
+            fwrite($this->sheetFilePointer, '<sheetFormatPr defaultRowHeight="' . $this->defaultRowHeight . '"/>');
+        }
+        if ($this->defaultColumnWidths) {
+            fwrite($this->sheetFilePointer, '<cols>');
+            foreach ($this->defaultColumnWidths as $min => $params) {
+                fwrite($this->sheetFilePointer, '<col min="' . $min . '" max="' . $params['max'] .'" width="' . $params['width'] . '" customWidth="1"/>');
+            }
+
+            fwrite($this->sheetFilePointer, '</cols>');
         }
         
         fwrite($this->sheetFilePointer, '</worksheet>');

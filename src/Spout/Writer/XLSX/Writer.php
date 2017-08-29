@@ -124,6 +124,18 @@ class Writer extends AbstractMultiSheetsWriter
         $this->book->setMergeCellsToCurrentWorksheet($mergeCells);
     }
 
+    public function setDefaultRowHeightToCurrentWorksheet($heightPx)
+    {
+        $this->throwIfBookIsNotAvailable();
+        $this->book->setDefaultRowHeightToCurrentWorksheet($heightPx);
+    }
+
+    public function addDefaultColumnWidthToCurrentWorksheet($min, $max, $width)
+    {
+        $this->throwIfBookIsNotAvailable();
+        $this->book->addDefaultColumnWidthToCurrentWorksheet($min, $max, $width);
+    }
+
     /**
      * Closes the writer, preventing any additional writing.
      *

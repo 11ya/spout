@@ -128,6 +128,18 @@ class Workbook extends AbstractWorkbook
         $sheet->setMergeCells($mergeCells);
     }
 
+    public function setDefaultRowHeightToCurrentWorksheet($height)
+    {
+        $sheet = $this->getCurrentWorksheet();
+        $sheet->setDefaultRowHeight($height);
+    }
+
+    public function addDefaultColumnWidthToCurrentWorksheet($min, $max, $width)
+    {
+        $sheet = $this->getCurrentWorksheet();
+        $sheet->addDefaultColumnWidth($min, $max, $width);
+    }
+
     /**
      * Deletes the root folder created in the temp folder and all its contents.
      *
