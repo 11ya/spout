@@ -225,8 +225,9 @@ class RowIterator implements IteratorInterface
         $dimensionRef = $xmlReader->getAttribute(self::XML_ATTRIBUTE_REF); // returns 'A1:M13' for instance (or 'A1' for empty sheet)
         if (preg_match('/[A-Z]+\d+$/', $dimensionRef, $matches)) {
             $this->numColumns = CellHelper::getColumnIndexFromCellIndex($matches[0]) + 1;
-            if ($matches[0] != 'CM65536') {
-                $this->dimensionRows = CellHelper::getRowIndexFromCellIndex($matches[0]);
+            $dimensionRows = CellHelper::getRowIndexFromCellIndex($matches[0]);
+            if ($matches[0] != 'CM65536' && $dimensionRows < 1e6) {
+                $this->dimensionRows = $dimensionRows;
             }
         }
 
@@ -363,13 +364,7 @@ class RowIterator implements IteratorInterface
      */
     protected function isEmptyRow($rowData)
     {
-        foreach ($rowData as $cell) {
-            if (is_object($cell) || strlen($cell)) {
-                return false;
-            }
-        }
-
-        return true;
+        return (count($rowData) === 1 && $rowData[0] === '');
     }
 
     /**
